@@ -1,7 +1,7 @@
 let mic;
 let analyzer;
 let images = [];
-let threshold = 0.02;
+let threshold = 0.05;
 let rotationSpeed = 1;
 let currentRotation = 0;
 let currentImage = null;
@@ -26,6 +26,13 @@ function preload() {
    images.push(loadImage('libraries/trazo12.png'));
   images.push(loadImage('libraries/trazo13.png'));
   images.push(loadImage('libraries/trazo14.png'));
+  images.push(loadImage('libraries/trazo16.png'));
+  images.push(loadImage('libraries/trazo17.png'));
+   images.push(loadImage('libraries/trazo18.png'));
+  images.push(loadImage('libraries/trazo19.png'));
+  images.push(loadImage('libraries/trazo20.png'));
+  images.push(loadImage('libraries/trazo21.png'));
+ 
   // Agrega más rutas de imagen si deseas usar diferentes trazos
 }
 
@@ -52,13 +59,13 @@ function draw() {
       let y = random(height);
       let imageIndex = floor(random(images.length));
       currentImage = images[imageIndex];
-      currentImage.resize(imageSize, imageSize); // Ajustar tamaño de la imagen
-       // Restablecer la rotación cuando aparece una nueva imagen
+      currentImage.resize(imageSize, imageSize);
 
       let imageObj = {
         image: currentImage,
         x: x,
-        y: y
+        y: y,
+        rotationComplete: false 
       };
 
       imageList.push(imageObj);
@@ -70,9 +77,20 @@ function draw() {
   for (let i = 0; i < imageList.length; i++) {
     let imageObj = imageList[i];
     push();
-    translate(imageObj.x + imageSize / 2, imageObj.y + imageSize / 2); // Centrar la imagen en su posición
-    rotate(currentRotation);
-    image(imageObj.image, -imageSize / 2, -imageSize / 2); // Dibujar la imagen centrada
+    translate(imageObj.x + imageSize / 2, imageObj.y + imageSize / 2);
+
+    if (!imageObj.rotationComplete) {
+      rotate(currentRotation);
+      image(imageObj.image, -imageSize / 2, -imageSize / 2);
+
+      if (currentRotation >= 360) {
+        imageObj.rotationComplete = true; 
+        rotationSpeed = 0; // Detener la rotación
+      }
+    } else {
+      image(imageObj.image, -imageSize / 2, -imageSize / 2); 
+    }
+
     pop();
   }
 
